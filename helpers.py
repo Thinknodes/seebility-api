@@ -1,3 +1,4 @@
+#this module contains helper functions we would be calling from zincapi
 import requests
 from dotenv import load_dotenv
 import os
