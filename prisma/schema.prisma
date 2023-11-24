@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ModeOfSignUp {
+  EMAIL
+  GOOGLE
+  APPLE
+}
+
+model User {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  password        String
+  name            String
+  image           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  lastLogin       DateTime?
+  isEmailVerified Boolean        @default(false)
+  modeOfSignUp    ModeOfSignUp
+  notifications   Notification[]
+  cartItems       CartItem[]
+
+  @@map("users")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  image     String?
+
+  @@map("notifications")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+  image     String?
+  name      String
+  price     Float
+
+  @@map("cart_items")
+}
