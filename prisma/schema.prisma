@@ -26,6 +26,7 @@ model User {
   modeOfSignUp    ModeOfSignUp
   notifications   Notification[]
   cartItems       CartItem[]
+  orders          Order[]
 
   @@map("users")
 }
@@ -53,6 +54,18 @@ model CartItem {
   image     String?
   name      String
   price     Float
+  order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   String?
 
   @@map("cart_items")
+}
+
+model Order {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  cartItems CartItem[]
+
+  @@map("orders")
 }

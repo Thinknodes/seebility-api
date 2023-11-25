@@ -23,8 +23,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { SpeechCreateDto, UpdateSpeechDto } from './speech-dto.class';
-import { SpeechPresenter } from './speech.presenter';
+import { SpeechCreateDto, UpdateSpeechDto } from './cart-dto.class';
+import { SpeechPresenter } from './cart.presenter';
 
 import { UseCaseProxy } from '../../usecases-proxy/usecases-proxy';
 import { UsecasesProxyModule } from '../../usecases-proxy/usecases-proxy.module';

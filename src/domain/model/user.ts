@@ -10,7 +10,7 @@ export class UserM {
   id: string;
   email: string;
   name: string;
-  image: string;
+  image: string | null;
   lastLogin: Date | null;
   isEmailVerified: boolean;
   modeOfSignUp: (typeof ModeOfSignUp)[keyof typeof ModeOfSignUp];

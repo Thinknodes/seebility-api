@@ -1,7 +1,6 @@
 import { Environment } from '@domain/config/environment.interface';
 import { plainToClass } from 'class-transformer';
 import {
-  IsBoolean,
   IsEmail,
   IsEnum,
   IsNumber,
@@ -83,10 +82,6 @@ class EnvironmentVariables {
   @IsString()
   @IsOptional()
   REDIS_URL: string;
-
-  // Open ai
-  @IsString()
-  OPENAI_API_KEY: string;
 }
 
 export function validate(config: Record<string, unknown>) {
