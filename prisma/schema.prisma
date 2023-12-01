@@ -23,7 +23,7 @@ model User {
   updatedAt       DateTime       @updatedAt
   lastLogin       DateTime?
   isEmailVerified Boolean        @default(false)
-  modeOfSignUp    ModeOfSignUp
+  modeOfSignUp    ModeOfSignUp   @default(EMAIL)
   notifications   Notification[]
   cartItems       CartItem[]
   orders          Order[]
@@ -68,4 +68,12 @@ model Order {
   cartItems CartItem[]
 
   @@map("orders")
+}
+
+model WaitList {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  email     String   @unique
+
+  @@map("wait_list")
 }

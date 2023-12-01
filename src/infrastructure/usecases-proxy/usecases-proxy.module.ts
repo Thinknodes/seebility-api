@@ -23,18 +23,11 @@ import { EmailModule } from '@infrastructure/services/email/email.module';
 import { CachingModule } from '@infrastructure/drivers/cache/cache.module';
 import { CacheService } from '@infrastructure/drivers/cache/cache.service';
 import { ForgetPasswordUseCases } from '@usecases/auth/forget-password.usecases';
-import { SpeechUseCases } from '@usecases/speech/speech.usecases';
-import {
-  GeneratorService,
-  PromptGenerator,
-  TokenCounter,
-} from '@infrastructure/services/generator/generator.service';
-import { SpeechRepositoryImp } from '@infrastructure/repositories/speech.repository';
-import { GetSpeechUseCases } from '@usecases/speech/getSpeech.usecases';
-import { GeneratorServiceModule } from '@infrastructure/services/generator/generator.module';
 import { ProfileUseCases } from '@usecases/auth/profile.usecases';
 import { FirebaseService } from '@infrastructure/services/firebase/firebase.service';
 import { FirebaseModule } from '@infrastructure/services/firebase/firebase.module';
+import { WaitListUseCases } from '@usecases/waitlist/add';
+import { WaitlistRepositoryImp } from '@infrastructure/repositories/waitlist.repository';
 
 @Module({
   imports: [
@@ -46,7 +39,6 @@ import { FirebaseModule } from '@infrastructure/services/firebase/firebase.modul
     ExceptionsModule,
     EmailModule,
     CachingModule,
-    GeneratorServiceModule,
     FirebaseModule,
   ],
 })
@@ -54,8 +46,7 @@ export class UsecasesProxyModule {
   static LOGIN_USECASES_PROXY = Symbol('LoginUseCasesProxy');
   static REGISTER_USECASES_PROXY = Symbol('RegisterUseCasesProxy');
   static FORGOT_PASSWORD_USECASES_PROXY = Symbol('ForgotPasswordUseCasesProxy');
-  static SPEECH_USECASES_PROXY = Symbol('SpeechUseCasesProxy');
-  static GET_SPEECH_USECASES_PROXY = Symbol('GetSpeechUseCasesProxy');
+  static WAITLIST_USECASES_PROXY = Symbol('WaitListUseCasesProxy');
   static PROFILE_USECASES_PROXY = Symbol('ProfileUseCasesProxy');
 
   static register(): DynamicModule {
@@ -156,44 +147,19 @@ export class UsecasesProxyModule {
             ),
         },
         {
-          inject: [
-            GeneratorService,
-            PromptGenerator,
-            TokenCounter,
-            SpeechRepositoryImp,
-            ExceptionsService,
-          ],
-          provide: UsecasesProxyModule.SPEECH_USECASES_PROXY,
+          inject: [WaitlistRepositoryImp, ExceptionsService],
+          provide: UsecasesProxyModule.WAITLIST_USECASES_PROXY,
           useFactory: (
-            generator: GeneratorService,
-            promptGenerator: PromptGenerator,
-            tokenCounter: TokenCounter,
-            speechRepository: SpeechRepositoryImp,
+            repository: WaitlistRepositoryImp,
             exception: ExceptionsService,
           ) =>
             new UseCaseProxy(
-              new SpeechUseCases(
-                new LoggerService(SpeechUseCases.name),
-                generator,
-                promptGenerator,
-                tokenCounter,
-                speechRepository,
+              new WaitListUseCases(
+                new LoggerService(WaitListUseCases.name),
+                repository,
                 exception,
               ),
             ),
-        },
-        {
-          inject: [SpeechRepositoryImp, ExceptionsService],
-          provide: UsecasesProxyModule.GET_SPEECH_USECASES_PROXY,
-          useFactory: (
-            speechRepository: SpeechRepositoryImp,
-            exception: ExceptionsService,
-          ) => {
-            const logger = new LoggerService(GetSpeechUseCases.name);
-            return new UseCaseProxy(
-              new GetSpeechUseCases(logger, speechRepository, exception),
-            );
-          },
         },
         {
           inject: [UserRepositoryImp, ExceptionsService, BcryptService],
@@ -217,8 +183,7 @@ export class UsecasesProxyModule {
         UsecasesProxyModule.LOGIN_USECASES_PROXY,
         UsecasesProxyModule.REGISTER_USECASES_PROXY,
         UsecasesProxyModule.FORGOT_PASSWORD_USECASES_PROXY,
-        UsecasesProxyModule.SPEECH_USECASES_PROXY,
-        UsecasesProxyModule.GET_SPEECH_USECASES_PROXY,
+        UsecasesProxyModule.WAITLIST_USECASES_PROXY,
         UsecasesProxyModule.PROFILE_USECASES_PROXY,
       ],
     };

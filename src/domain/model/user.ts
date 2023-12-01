@@ -1,9 +1,7 @@
 export const ModeOfSignUp = {
   EMAIL: 'EMAIL',
   GOOGLE: 'GOOGLE',
-  FACEBOOK: 'FACEBOOK',
-  GITHUB: 'GITHUB',
-  TWITTER: 'TWITTER',
+  APPLE: 'APPLE',
 };
 
 export class UserM {

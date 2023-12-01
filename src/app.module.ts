@@ -19,7 +19,6 @@ import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { LoggingInterceptor } from '@infrastructure/common/interceptors/logger.interceptor';
 import { ResponseInterceptor } from '@infrastructure/common/interceptors/response.interceptor';
 import { AllExceptionFilter } from '@infrastructure/common/filter/exception.filter';
-import { GeneratorServiceModule } from '@infrastructure/services/generator/generator.module';
 import { RepositoriesModule } from '@infrastructure/repositories/repositories.module';
 import {
   AuthenticationCookieMiddleware,
@@ -42,7 +41,6 @@ import { FirebaseModule } from '@infrastructure/services/firebase/firebase.modul
     EnvironmentConfigModule,
     EmailModule,
     JwtModule.register({}),
-    GeneratorServiceModule,
     RepositoriesModule,
     ApiKeyValidateModule,
     FirebaseModule,
