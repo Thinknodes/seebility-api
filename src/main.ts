@@ -26,7 +26,7 @@ async function bootstrap() {
   // Configure CORS
   let allowedOrigins: (string | RegExp)[] = [];
   if (mode == Environment.Development) {
-    allowedOrigins = [/localhost/, /vercel\.app/];
+    allowedOrigins = [/localhost/, /127.0.0.1/, /vercel\.app/];
     app.enableCors({
       origin: allowedOrigins,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
