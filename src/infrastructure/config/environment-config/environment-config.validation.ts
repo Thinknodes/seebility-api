@@ -31,10 +31,6 @@ class EnvironmentVariables {
   @IsOptional()
   FRONTEND_URLS: string;
 
-  // Firebase
-  @IsString()
-  FIREBASE_SERVICE_ACCOUNT: string;
-
   // mail
   @IsString()
   MAIL_HOST: string;

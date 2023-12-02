@@ -8,10 +8,7 @@ import { ILogger } from '@domain/logger/logger.interface';
 import { IException } from '@domain/exceptions/exceptions.interface';
 import { IBcryptService } from '@domain/adapters/bcrypt.interface';
 import { ICacheService } from '@domain/adapters/cache.interface';
-import { IFirebaseService } from '@domain/adapters/firebase.interface';
 import { JWTConfig } from '@domain/config/jwt.interface';
-import { JwtTokenService } from '@infrastructure/services/jwt/jwt.service';
-import { TokenType } from '@domain/adapters/jwt.interface';
 
 export class RegisterUseCases {
   constructor(
@@ -22,8 +19,6 @@ export class RegisterUseCases {
     private readonly mail: EmailService,
     private readonly cache: ICacheService,
     private readonly config: EnvironmentConfig & JWTConfig,
-    private readonly firebaseService: IFirebaseService,
-    private readonly jwtService: JwtTokenService,
   ) {}
 
   async register(email: string, password: string, name: string) {
@@ -45,71 +40,6 @@ export class RegisterUseCases {
 
     this.logger.log(`The user ${email} have been created.`);
     return user;
-  }
-
-  async registerWithGoogle(idToken: string) {
-    const response = await this.firebaseService.verifyIdToken(idToken);
-
-    if (response == null) {
-      this.logger.error('Invalid token');
-      throw this.exception.unauthorizedException();
-    }
-
-    const { email, email_verified, picture, name } = response;
-
-    if (!email_verified) {
-      this.logger.error('===> UNVERIFIED GOOGLE ACCOUNT <===');
-      throw this.exception.badRequestException({
-        message: 'Unverified google account',
-      });
-    }
-
-    let user = await this.userRepository.getUserByEmail(email);
-    if (user != null) {
-      if (!user.isEmailVerified) {
-        await this.userRepository.updateProfile(
-          {
-            isEmailVerified: true,
-          },
-          user.id,
-        );
-      }
-    } else {
-      user = await this.userRepository.createOauthUser({
-        email,
-        name,
-        image: picture,
-        isEmailVerified: true,
-      });
-    }
-
-    const payload = {
-      email,
-      id: user.id,
-    };
-    const access = await this.jwtService.signPayload(
-      {
-        ...payload,
-        type: TokenType.ACCESS,
-      },
-      this.config.getJwtSecret(),
-      this.config.getJwtExpirationTime(),
-    );
-    const refresh = await this.jwtService.signPayload(
-      {
-        ...payload,
-        type: TokenType.REFRESH,
-      },
-      this.config.getJwtRefreshSecret(),
-      this.config.getJwtRefreshExpirationTime(),
-    );
-    return {
-      access,
-      refresh,
-      accessExpiresIn: this.config.getJwtExpirationTime(),
-      refreshExpiresIn: this.config.getJwtRefreshExpirationTime(),
-      email: user.email,
-    };
   }
 
   async createOtp(email: string) {

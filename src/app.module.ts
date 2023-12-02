@@ -26,7 +26,6 @@ import {
 } from '@infrastructure/middlewares/authentication.middleware';
 import { ApiMiddleware } from '@infrastructure/middlewares/apikey.middleware';
 import { ApiKeyValidateModule } from '@infrastructure/services/api-validate/api-validate.module';
-import { FirebaseModule } from '@infrastructure/services/firebase/firebase.module';
 
 @Module({
   imports: [
@@ -43,7 +42,6 @@ import { FirebaseModule } from '@infrastructure/services/firebase/firebase.modul
     JwtModule.register({}),
     RepositoriesModule,
     ApiKeyValidateModule,
-    FirebaseModule,
   ],
   providers: [
     {

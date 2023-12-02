@@ -7,25 +7,12 @@ import {
   EnvironmentConfig,
 } from '@domain/config/environment.interface';
 import { MailConfig } from '@domain/config/mail.interface';
-import { FirebaseConfig } from '@domain/config/firebase.interface';
 
 @Injectable()
 export class EnvironmentConfigService
-  implements
-    JWTConfig,
-    RedisConfig,
-    EnvironmentConfig,
-    MailConfig,
-    FirebaseConfig
+  implements JWTConfig, RedisConfig, EnvironmentConfig, MailConfig
 {
   constructor(private configService: ConfigService) {}
-
-  getFirebaseServiceAccount() {
-    const serviceKey = this.configService.get<string>(
-      'FIREBASE_SERVICE_ACCOUNT',
-    );
-    return JSON.parse(serviceKey);
-  }
 
   getResetPasswordUrl(): string {
     return this.configService.get<string>('RESET_PASSWORD_URL');

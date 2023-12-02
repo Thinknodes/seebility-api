@@ -173,46 +173,6 @@ export class AuthController {
     return new RefreshedAccessTokenPresenter(access);
   }
 
-  @Post('sign-in/google')
-  @ApiBody({ type: GoogleSignInDto })
-  @ApiOperation({
-    summary: 'Signing in a user with google',
-    description: 'Use this route to login a user with google',
-  })
-  @ApiOkResponse({
-    description: 'The user was registered successfully and logged in',
-    type: IsAuthPresenter,
-  })
-  @HttpCode(HttpStatus.OK)
-  async signInWithGoogle(
-    @Body() data: GoogleSignInDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const tokens = await this.registerUseCaseProxy
-      .getInstance()
-      .registerWithGoogle(data.idToken);
-
-    res.cookie('token', tokens.access, {
-      httpOnly: true,
-      path: '/',
-      maxAge: timeStringToSeconds(tokens.accessExpiresIn) * 1000,
-      sameSite: this.config.isDevelopment() ? 'lax' : 'none',
-      secure: !this.config.isDevelopment(),
-    });
-    res.cookie('refresh', tokens.refresh, {
-      httpOnly: true,
-      path: '/',
-      maxAge: timeStringToSeconds(tokens.refreshExpiresIn) * 1000,
-      sameSite: this.config.isDevelopment() ? 'lax' : 'none',
-      secure: !this.config.isDevelopment(),
-    });
-
-    return new IsAuthPresenter({
-      token: tokens,
-      email: tokens.email,
-    });
-  }
-
   @Post('register')
   @ApiBody({ type: RegisterDto })
   @ApiOperation({

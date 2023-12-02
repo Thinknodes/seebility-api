@@ -24,8 +24,6 @@ import { CachingModule } from '@infrastructure/drivers/cache/cache.module';
 import { CacheService } from '@infrastructure/drivers/cache/cache.service';
 import { ForgetPasswordUseCases } from '@usecases/auth/forget-password.usecases';
 import { ProfileUseCases } from '@usecases/auth/profile.usecases';
-import { FirebaseService } from '@infrastructure/services/firebase/firebase.service';
-import { FirebaseModule } from '@infrastructure/services/firebase/firebase.module';
 import { WaitListUseCases } from '@usecases/waitlist/add';
 import { WaitlistRepositoryImp } from '@infrastructure/repositories/waitlist.repository';
 
@@ -39,7 +37,6 @@ import { WaitlistRepositoryImp } from '@infrastructure/repositories/waitlist.rep
     ExceptionsModule,
     EmailModule,
     CachingModule,
-    FirebaseModule,
   ],
 })
 export class UsecasesProxyModule {
@@ -88,8 +85,6 @@ export class UsecasesProxyModule {
             EmailService,
             CacheService,
             EnvironmentConfigService,
-            FirebaseService,
-            JwtTokenService,
           ],
           provide: UsecasesProxyModule.REGISTER_USECASES_PROXY,
           useFactory: (
@@ -99,8 +94,6 @@ export class UsecasesProxyModule {
             email: EmailService,
             cache: CacheService,
             config: EnvironmentConfigService,
-            firebase: FirebaseService,
-            jwtService: JwtTokenService,
           ) =>
             new UseCaseProxy(
               new RegisterUseCases(
@@ -111,8 +104,6 @@ export class UsecasesProxyModule {
                 email,
                 cache,
                 config,
-                firebase,
-                jwtService,
               ),
             ),
         },
