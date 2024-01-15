@@ -26,6 +26,8 @@ import { ForgetPasswordUseCases } from '@usecases/auth/forget-password.usecases'
 import { ProfileUseCases } from '@usecases/auth/profile.usecases';
 import { WaitListUseCases } from '@usecases/waitlist/add';
 import { WaitlistRepositoryImp } from '@infrastructure/repositories/waitlist.repository';
+import { GetCartUseCases } from '@usecases/cart/get-cart.usecases';
+import { CartRepositoryImp } from '@infrastructure/repositories/cart.repository';
 
 @Module({
   imports: [
@@ -45,6 +47,7 @@ export class UsecasesProxyModule {
   static FORGOT_PASSWORD_USECASES_PROXY = Symbol('ForgotPasswordUseCasesProxy');
   static WAITLIST_USECASES_PROXY = Symbol('WaitListUseCasesProxy');
   static PROFILE_USECASES_PROXY = Symbol('ProfileUseCasesProxy');
+  static GET_CART_USECASES_PROXY = Symbol('GetCartUseCasesProxy');
 
   static register(): DynamicModule {
     return {
@@ -169,6 +172,17 @@ export class UsecasesProxyModule {
               ),
             ),
         },
+        {
+          inject: [CartRepositoryImp],
+          provide: UsecasesProxyModule.GET_CART_USECASES_PROXY,
+          useFactory: (cartRepo: CartRepositoryImp) =>
+            new UseCaseProxy(
+              new GetCartUseCases(
+                new LoggerService(GetCartUseCases.name),
+                cartRepo,
+              ),
+            ),
+        },
       ],
       exports: [
         UsecasesProxyModule.LOGIN_USECASES_PROXY,
@@ -176,6 +190,7 @@ export class UsecasesProxyModule {
         UsecasesProxyModule.FORGOT_PASSWORD_USECASES_PROXY,
         UsecasesProxyModule.WAITLIST_USECASES_PROXY,
         UsecasesProxyModule.PROFILE_USECASES_PROXY,
+        UsecasesProxyModule.GET_CART_USECASES_PROXY,
       ],
     };
   }

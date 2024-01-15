@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UsecasesProxyModule } from '../usecases-proxy/usecases-proxy.module';
-import { AuthController } from './auth/auth.controller';
 import { LoggerModule } from '@infrastructure/logger/logger.module';
 import { EnvironmentConfigModule } from '@infrastructure/config/environment-config/environment-config.module';
 import { WaitListController } from './waitlist/waitlist.controller';
+import { CartController } from './cart/cart.controller';
 
 @Module({
   imports: [
@@ -11,6 +11,6 @@ import { WaitListController } from './waitlist/waitlist.controller';
     LoggerModule,
     EnvironmentConfigModule,
   ],
-  controllers: [WaitListController],
+  controllers: [WaitListController, CartController],
 })
 export class ControllersModule {}

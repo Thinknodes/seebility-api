@@ -104,10 +104,6 @@ export class AppModule {
           path: 'auth/sign-in/google',
           method: RequestMethod.POST,
         },
-        {
-          path: 'speech/:id',
-          method: RequestMethod.GET,
-        },
       )
       .forRoutes('*')
 
@@ -145,16 +141,11 @@ export class AppModule {
           path: 'auth/sign-in/google',
           method: RequestMethod.POST,
         },
-        {
-          path: 'speech/:id(?!/(list|create|update|delete|generate|stream))',
-          method: RequestMethod.GET,
-        },
       )
       .forRoutes('*')
 
       // API Key middleware
       .apply(ApiMiddleware)
-      .exclude({ path: 'speech/stream/(.*)', method: RequestMethod.GET })
       .forRoutes('*');
   }
 }
